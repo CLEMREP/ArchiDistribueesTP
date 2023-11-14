@@ -15,14 +15,15 @@ def get_booking_by_userid(stub, userid):
     return booking
 
 def get_list_bookings(stub):
-    allbooking = stub.GetListBookings(booking_pb2.Empty())
-    for booking in allbooking:
+    allBookings = stub.GetListBookings(booking_pb2.Empty())
+    for booking in allBookings.bookings:
         print(booking)
 
 channel = grpc.insecure_channel('localhost:3002')
 stub = booking_pb2_grpc.BookingStub(channel)
 
 get_booking_by_userid(stub, "chris_rivers")
+get_list_bookings(stub)
 
 with open('{}/databases/users.json'.format("."), "r") as jsf:
    users = json.load(jsf)["users"]
@@ -42,36 +43,25 @@ def get_user_byid(userid):
 @app.route("/users/bookings/<userid>", methods=['GET'])
 def get_user_bookings(userid):
     res = get_booking_by_userid(stub, userid)
-    return make_response(res)
+    if len(res.bookings) == 0:
+        return make_response(jsonify({"error":"Bookings not found for this User ID"}))
+    response = []
+    for booking in res.bookings:
+        response.append(booking.userid)
+        for date in booking.dates:
+            response.append(date.date)
+            movies = []
+            for movie in date.movies:
+                query = """
+                query {
+                    movie_with_id(_id: """ + '''"''' + str(movie) + '''"''' + """) {id title rating director}
+                }
+                """
+                movies.append(requests.post("http://localhost:3001/graphql", json={'query': query}).json()['data']['movie_with_id'])
+            response.append({"movies":movies})
+    return make_response(jsonify(response))
 
-@app.route("/users/infomovies/<userid>", methods=['GET'])
-def get_user_movies(userid):
-    res = requests.get("http://localhost:3201/bookings/{}".format(userid)).json()
-    movies = []
-    rvalue = []
-    if 'dates' not in res:
-        return make_response(jsonify({"error":"No books found for this UserID"}),400)
 
-    for movie in res['dates'][0]['movies']:
-        print(movie)
-        query = """
-        query {
-            movie_with_id(_id: """ + '''"''' + str(movie) + '''"''' + """) {id title}
-        }
-        """
-        print(requests.post("http://localhost:3001/graphql", json={'query': query}).json())
-        movies.append(requests.post("http://localhost:3001/graphql", json={'query': query}).json()['data']['movie_with_id'])
-        print(movies)
-
-    for movie in movies:
-        query = """
-        query {
-            movie_with_id(_id: """ + '''"''' + str(movie['id']) + '''"''' + """) {id title}
-        }
-        """
-        rvalue.append(requests.post("http://localhost:3001/graphql", json={'query': query}).json())
-
-    return make_response(jsonify(rvalue), 200)
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))

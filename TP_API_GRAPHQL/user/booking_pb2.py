@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rbooking.proto\"\x18\n\x06UserId\x12\x0e\n\x06userid\x18\x01 \x01(\t\"$\n\x04\x44\x61te\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0e\n\x06movies\x18\x02 \x03(\t\"0\n\x08\x42ookingE\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12\x14\n\x05\x64\x61tes\x18\x02 \x03(\x0b\x32\x05.Date\"*\n\x0b\x41llBookings\x12\x1b\n\x08\x62ookings\x18\x01 \x03(\x0b\x32\t.BookingE\"\x07\n\x05\x45mpty2_\n\x07\x42ooking\x12*\n\x12GetBookingByUserId\x12\x07.UserId\x1a\t.BookingE\"\x00\x12(\n\x0fGetListBookings\x12\x06.Empty\x1a\t.BookingE\"\x00\x30\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rbooking.proto\"\x18\n\x06UserId\x12\x0e\n\x06userid\x18\x01 \x01(\t\"$\n\x04\x44\x61te\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0e\n\x06movies\x18\x02 \x03(\t\"0\n\x08\x42ookingE\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12\x14\n\x05\x64\x61tes\x18\x02 \x03(\x0b\x32\x05.Date\"*\n\x0b\x41llBookings\x12\x1b\n\x08\x62ookings\x18\x01 \x03(\x0b\x32\t.BookingE\"\x07\n\x05\x45mpty2c\n\x07\x42ooking\x12-\n\x12GetBookingByUserId\x12\x07.UserId\x1a\x0c.AllBookings\"\x00\x12)\n\x0fGetListBookings\x12\x06.Empty\x1a\x0c.AllBookings\"\x00\x62\x06proto3')
 
 
 
@@ -73,5 +73,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _EMPTY._serialized_start=175
   _EMPTY._serialized_end=182
   _BOOKING._serialized_start=184
-  _BOOKING._serialized_end=279
+  _BOOKING._serialized_end=283
 # @@protoc_insertion_point(module_scope)

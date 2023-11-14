@@ -1,11 +1,11 @@
 syntax = "proto3";
 
 service Showtime {
-    rpc GetShowMoviesByDate(Date) returns (Schedule) {}
-    rpc GetListShowtimes(Empty) returns (AllSchedule) {}
+    rpc GetShowMoviesByDate(ShowtimeDate) returns (Schedule) {}
+    rpc GetListShowtimes(ShowtimeEmpty) returns (AllSchedule) {}
 }
 
-message Date {
+message ShowtimeDate {
     string date = 1;
 }
 
@@ -18,5 +18,5 @@ message AllSchedule {
     repeated Schedule schedules = 1;
 }
 
-message Empty {
+message ShowtimeEmpty {
 }

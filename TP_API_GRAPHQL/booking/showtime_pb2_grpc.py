@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import booking.showtime_pb2 as showtime__pb2
+import showtime_pb2 as showtime__pb2
 
 
 class ShowtimeStub(object):
@@ -16,12 +16,12 @@ class ShowtimeStub(object):
         """
         self.GetShowMoviesByDate = channel.unary_unary(
                 '/Showtime/GetShowMoviesByDate',
-                request_serializer=showtime__pb2.Date.SerializeToString,
+                request_serializer=showtime__pb2.ShowtimeDate.SerializeToString,
                 response_deserializer=showtime__pb2.Schedule.FromString,
                 )
         self.GetListShowtimes = channel.unary_unary(
                 '/Showtime/GetListShowtimes',
-                request_serializer=showtime__pb2.Empty.SerializeToString,
+                request_serializer=showtime__pb2.ShowtimeEmpty.SerializeToString,
                 response_deserializer=showtime__pb2.AllSchedule.FromString,
                 )
 
@@ -46,12 +46,12 @@ def add_ShowtimeServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetShowMoviesByDate': grpc.unary_unary_rpc_method_handler(
                     servicer.GetShowMoviesByDate,
-                    request_deserializer=showtime__pb2.Date.FromString,
+                    request_deserializer=showtime__pb2.ShowtimeDate.FromString,
                     response_serializer=showtime__pb2.Schedule.SerializeToString,
             ),
             'GetListShowtimes': grpc.unary_unary_rpc_method_handler(
                     servicer.GetListShowtimes,
-                    request_deserializer=showtime__pb2.Empty.FromString,
+                    request_deserializer=showtime__pb2.ShowtimeEmpty.FromString,
                     response_serializer=showtime__pb2.AllSchedule.SerializeToString,
             ),
     }
@@ -76,7 +76,7 @@ class Showtime(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Showtime/GetShowMoviesByDate',
-            showtime__pb2.Date.SerializeToString,
+            showtime__pb2.ShowtimeDate.SerializeToString,
             showtime__pb2.Schedule.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -93,7 +93,7 @@ class Showtime(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Showtime/GetListShowtimes',
-            showtime__pb2.Empty.SerializeToString,
+            showtime__pb2.ShowtimeEmpty.SerializeToString,
             showtime__pb2.AllSchedule.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

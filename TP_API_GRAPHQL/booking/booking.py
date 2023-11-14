@@ -2,7 +2,18 @@ import grpc
 from concurrent import futures
 import booking_pb2
 import booking_pb2_grpc
+import showtime_pb2_grpc
+import showtime_pb2
 import json
+
+def get_list_showtimes(stub):
+    allShowtimes = stub.GetListShowtimes(showtime_pb2.ShowtimeEmpty())
+    for showtime in allShowtimes.schedules:
+        print(showtime)
+
+
+channel = grpc.insecure_channel('localhost:3003')
+stub = showtime_pb2_grpc.ShowtimeStub(channel)
 
 class BookingServicer(booking_pb2_grpc.BookingServicer):
     def __init__(self):
