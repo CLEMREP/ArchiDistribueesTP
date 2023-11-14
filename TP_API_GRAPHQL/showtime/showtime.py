@@ -1,37 +1,33 @@
-from flask import Flask, render_template, request, jsonify, make_response
+import grpc
+from concurrent import futures
+import showtime_pb2
+import showtime_pb2_grpc
 import json
-from werkzeug.exceptions import NotFound
 
-app = Flask(__name__)
+class ShowtimeServicer(showtime_pb2_grpc.ShowtimeServicer):
 
-PORT = 3202
-HOST = '0.0.0.0'
+    def __init__(self):
+        with open('{}/data/times.json'.format("."), "r") as jsf:
+            self.db = json.load(jsf)["schedule"]
 
-with open('{}/databases/times.json'.format("."), "r") as jsf:
-   schedule = json.load(jsf)["schedule"]
+    def GetListShowtimes(self, request, context):
+        schedules = []
+        for schedule in self.db:
+            schedules.append(showtime_pb2.Schedule(date=schedule['date'], movies=schedule['movies']))
+        return showtime_pb2.AllSchedule(schedules=schedules)
 
-@app.route("/", methods=['GET'])
-def home():
-   return "<h1 style='color:blue'>Welcome to the Showtime service!</h1>"
+    def GetShowMoviesByDate(self, request, context):
+        for schedule in self.db:
+            if schedule['date'] == request.date:
+                return showtime_pb2.Schedule(date=schedule['date'], movies=schedule['movies'])
 
-@app.route("/showtimes", methods=['GET'])
-def get_schedule():
-    return make_response(jsonify(schedule), 200)
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    showtime_pb2_grpc.add_ShowtimeServicer_to_server(ShowtimeServicer(), server)
+    server.add_insecure_port('localhost:3002')
+    server.start()
+    server.wait_for_termination()
 
 
-@app.route("/showmovies/<date>", methods=['GET'])
-def get_movies_bydate(date):
-    json = []
-    for movie in schedule:
-        if str(movie["date"]) == str(date):
-            json.append(movie)
-
-    if not json:
-        res = make_response(jsonify({"error":"date not found"}),400)
-    else:
-        res = make_response(jsonify(json),200)
-    return res
-
-if __name__ == "__main__":
-   print("Server running in port %s"%(PORT))
-   app.run(host=HOST, port=PORT)
+if __name__ == '__main__':
+    serve()

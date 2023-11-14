@@ -1,12 +1,28 @@
 from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import json
-from werkzeug.exceptions import NotFound
+import grpc
+import booking_pb2_grpc
+import booking_pb2
 
 app = Flask(__name__)
 
 PORT = 3203
 HOST = '0.0.0.0'
+
+def get_booking_by_userid(stub, userid):
+    booking = stub.GetBookingByUserId(booking_pb2.UserId(userid=userid))
+    return booking
+
+def get_list_bookings(stub):
+    allbooking = stub.GetListBookings(booking_pb2.Empty())
+    for booking in allbooking:
+        print(booking)
+
+channel = grpc.insecure_channel('localhost:3002')
+stub = booking_pb2_grpc.BookingStub(channel)
+
+get_booking_by_userid(stub, "chris_rivers")
 
 with open('{}/databases/users.json'.format("."), "r") as jsf:
    users = json.load(jsf)["users"]
@@ -25,7 +41,7 @@ def get_user_byid(userid):
 
 @app.route("/users/bookings/<userid>", methods=['GET'])
 def get_user_bookings(userid):
-    res = requests.get("http://localhost:3201/bookings/{}".format(userid)).json()
+    res = get_booking_by_userid(stub, userid)
     return make_response(res)
 
 @app.route("/users/infomovies/<userid>", methods=['GET'])
@@ -60,3 +76,4 @@ def get_user_movies(userid):
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
    app.run(host=HOST, port=PORT)
+
