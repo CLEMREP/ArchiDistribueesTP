@@ -7,23 +7,23 @@ import booking_pb2
 
 app = Flask(__name__)
 
-PORT = 3203
+PORT = 3004
 HOST = '0.0.0.0'
 
-# def get_booking_by_userid(stub, userid):
-#    booking = stub.GetBookingByUserId(booking_pb2.UserId(userid=userid))
-#    return booking
+def get_booking_by_userid(stub, userid):
+   booking = stub.GetBookingByUserId(booking_pb2.UserId(userid=userid))
+   return booking
 
-# def get_list_bookings(stub):
-#    allBookings = stub.GetListBookings(booking_pb2.Empty())
-#    for booking in allBookings.bookings:
-#        print(booking)
+def get_list_bookings(stub):
+   allBookings = stub.GetListBookings(booking_pb2.Empty())
+   for booking in allBookings.bookings:
+       print(booking)
 
-# channel = grpc.insecure_channel('localhost:3002')
-# stub = booking_pb2_grpc.BookingStub(channel)
+channel = grpc.insecure_channel('localhost:3002')
+stub = booking_pb2_grpc.BookingStub(channel)
 
-# get_booking_by_userid(stub, "chris_rivers")
-# get_list_bookings(stub)
+get_booking_by_userid(stub, "chris_rivers")
+get_list_bookings(stub)
 
 with open('{}/databases/users.json'.format("."), "r") as jsf:
     users = json.load(jsf)["users"]
@@ -68,30 +68,29 @@ def get_user_bookings(userid):
 
 @app.route("/users/add/<userid>", methods=['POST'])
 def create_user(userid):
-    global users
-
     for user in users:
         if str(user["id"]) == str(userid):
             return make_response(jsonify({"error": "User ID already exists"}), 400)
-    # Création de l'utilisateur
-    new_user = {
-        "id": userid,
-        "nom": request.json['nom'],
-        "last_active": int(request.json['last_active'])
-    }
-    # mise à jour des données
-    users.append(new_user)
-    # Écriture des données mises à jour dans le fichier
-    with open('{}/databases/users.json'.format("."), 'w') as file:
-        json.dump({"users": users}, file, indent=2)
 
-    return make_response(jsonify({"Succes": "User created"}), 200)
+    if 'name' in request.form and 'last_active' in request.form:
+        new_user = {
+            "id": userid,
+            "name": request.form.get('name'),
+            "last_active": int(request.form.get('last_active'))
+        }
+
+        users.append(new_user)
+        # Écriture des données mises à jour dans le fichier
+        with open('{}/databases/users.json'.format("."), 'w') as file:
+            json.dump({"users": users}, file, indent=2)
+
+        return make_response(jsonify({"success": "User created with success"}), 200)
+    else:
+        return make_response(jsonify({"error": "Missing parameters (name, last_active)"}), 400)
 
 
 @app.route("/users/delete/<userid>", methods=['DELETE'])
 def delete_user(userid):
-    global users
-
     # Recherche de l'utilisateur par ID
     user_to_delete = next((user for user in users if user['id'] == userid), None)
 
@@ -106,22 +105,21 @@ def delete_user(userid):
         return make_response(jsonify({"error": "Utilisateur non trouvé"}), 400)
 
 
-@app.route('/users/update/<userid>', methods=['GET'])
+@app.route('/users/update/<userid>', methods=['PUT'])
 def update_user(userid):
     # Recherche de l'utilisateur par ID
     user_to_update = next((user for user in users if user['id'] == userid), None)
 
+    # Mise à jour de l'utilisateur si il existe
     if user_to_update:
-        # Mettre à jour les informations de l'utilisateur
-        user_to_update['nom'] = request.json['name']
-
-        user_to_update['last_active'] = int(request.json['last_active'])
-
-        # Mettre à jour le fichier JSON
+        if 'name' in request.form:
+            user_to_update['name'] = request.form.get('name')
+        if 'last_active' in request.form:
+            user_to_update['last_active'] = request.form.get('last_active')
+        # Écriture des données mises à jour dans le fichier
         with open('{}/databases/users.json'.format("."), 'w') as file:
             json.dump({"users": users}, file, indent=2)
-
-        return make_response(jsonify({"success": "Utilisateur modifié avec succès"}), 200)
+        return make_response(jsonify({"success": "Utilisateur mis à jour avec succès"}), 200)
     else:
         return make_response(jsonify({"error": "Utilisateur non trouvé"}), 400)
 
