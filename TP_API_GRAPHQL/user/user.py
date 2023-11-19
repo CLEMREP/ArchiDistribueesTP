@@ -66,18 +66,16 @@ def get_user_bookings(userid):
     return make_response(jsonify(response))
 
 
-@app.route("/users/add/<userid>", methods=['POST'])
-def create_user(userid):
-    global users
-
+@app.route("/users/add/<userid>/<username>/<lastactive>", methods=['GET'])
+def create_user(userid, username, lastactive):
     for user in users:
         if str(user["id"]) == str(userid):
             return make_response(jsonify({"error": "User ID already exists"}), 400)
     # Création de l'utilisateur
     new_user = {
         "id": userid,
-        "nom": request.json['nom'],
-        "last_active": int(request.json['last_active'])
+        "nom": username,
+        "last_active": int(lastactive)
     }
     # mise à jour des données
     users.append(new_user)
@@ -88,10 +86,8 @@ def create_user(userid):
     return make_response(jsonify({"Succes": "User created"}), 200)
 
 
-@app.route("/users/delete/<userid>", methods=['DELETE'])
+@app.route("/users/delete/<userid>", methods=['GET'])
 def delete_user(userid):
-
-    global users
 
     # Recherche de l'utilisateur par ID
     user_to_delete = next((user for user in users if user['id'] == userid), None)
@@ -107,16 +103,16 @@ def delete_user(userid):
         return make_response(jsonify({"error": "Utilisateur non trouvé"}), 400)
 
 
-@app.route('/users/update/<userid>', methods=['PUT'])
-def update_user(userid):
+@app.route('/users/update/<userid>/<username>/<lastactive>', methods=['GET'])
+def update_user(userid, username, lastactive):
     # Recherche de l'utilisateur par ID
     user_to_update = next((user for user in users if user['id'] == userid), None)
 
     if user_to_update:
         # Mettre à jour les informations de l'utilisateur
-        user_to_update['nom'] = request.json['nom']
+        user_to_update['nom'] = username
 
-        user_to_update['last_active'] = int(request.json['last_active'])
+        user_to_update['last_active'] = int(lastactive)
 
         # Mettre à jour le fichier JSON
         with open('{}/databases/users.json'.format("."), 'w') as file:
