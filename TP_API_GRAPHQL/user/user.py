@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response
 import requests
 import json
 import grpc
@@ -66,8 +66,9 @@ def get_user_bookings(userid):
     return make_response(jsonify(response))
 
 
-@app.route("/users/add/<userid>", methods=['POST'])
-def create_user(userid):
+@app.route("/users/add", methods=['POST'])
+def create_user():
+    userid = request.form.get("userid")
     for user in users:
         if str(user["id"]) == str(userid):
             return make_response(jsonify({"error": "User ID already exists"}), 400)
