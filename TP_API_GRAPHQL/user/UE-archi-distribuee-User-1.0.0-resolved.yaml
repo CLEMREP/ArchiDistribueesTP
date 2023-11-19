@@ -108,6 +108,38 @@ paths:
                 items:
                   $ref: '#/components/schemas/Booking'
 
+  /users/add/{userid}/{username}/{lastactive}:
+    get:
+      summary: Add user in users.json
+      parameters:
+        - name: userid
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+        - name: username
+          in: path
+          description: User Name
+          required: true
+          schema:
+            type: string
+        - name: last_active
+          in: path
+          description: last active
+          required: true
+          schema:
+            type: int
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+        "400":
+          description: User ID already used
+
 components:
   schemas:
     AllUsers:
