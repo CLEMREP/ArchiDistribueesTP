@@ -48,21 +48,27 @@ def get_movie_bytitle():
 def create_movie(movieid):
     req = request.get_json()
 
+    if 'title' not in req or 'rating' not in req or 'director' not in req:
+        return make_response(jsonify({"error": "missing arguments (title, rating, director)"}), 400)
+
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             return make_response(jsonify({"error":"movie ID already exists"}),409)
 
+    req["id"] = movieid
     movies.append(req)
-    res = make_response(jsonify({"message":"movie added"}),200)
-    return res
+    with open('{}/databases/movies.json'.format("."), "w") as jsf:
+        json.dump({"movies": movies}, jsf, indent=2)
+    return make_response(jsonify({"message":"movie added"}),200)
 
 @app.route("/movies/<movieid>/<rate>", methods=['PUT'])
 def update_movie_rating(movieid, rate):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             movie["rating"] = float(rate)
-            res = make_response(jsonify(movie),200)
-            return res
+            with open('{}/databases/movies.json'.format("."), "w") as jsf:
+                json.dump({"movies": movies}, jsf, indent=2)
+            return make_response(jsonify({"message":"movie rating updated"}),200)
 
     res = make_response(jsonify({"error":"movie ID not found"}),201)
     return res
@@ -72,7 +78,9 @@ def del_movie(movieid):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
             movies.remove(movie)
-            return make_response(jsonify(movie),200)
+            with open('{}/databases/movies.json'.format("."), "w") as jsf:
+                json.dump({"movies": movies}, jsf, indent=2)
+            return make_response(jsonify({"message":"movie deleted"}),200)
 
     res = make_response(jsonify({"error":"movie ID not found"}),400)
     return res
