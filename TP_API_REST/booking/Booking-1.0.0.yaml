@@ -28,11 +28,11 @@ paths:
             application/json:
               example: [{"userid": "chris_rivers", "dates": [{"date": "2023-01-01", "movies": [1, 2, 3]}]}]
 
-  /bookings/{userid}:
+  /bookings/{user_id}:
     get:
       summary: "Get booking by UserID"
       parameters:
-        - name: userid
+        - name: user_id
           in: path
           required: true
           schema:

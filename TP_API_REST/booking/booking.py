@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response
 import requests
 import json
-from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
 
@@ -32,13 +31,39 @@ def get_booking_byid(userid):
 def create_booking(userid):
     req = request.get_json()
 
+    if 'date' not in req or 'movieid' not in req:
+        return make_response(jsonify({"error": "missing arguments (date, movieid)"}), 400)
+
+    date = req['date']
+    movieid = req['movieid']
+    seancesByDate = requests.get("http://localhost:3202/showmovies/{}".format(date)).json()
+
+    if movieid not in seancesByDate[0]['movies']:
+        return make_response(jsonify({"error": "movie not found"}), 400)
+
     for booking in bookings:
         if str(booking["userid"]) == str(userid):
-            return make_response(jsonify({"error":"booking ID already exists"}),409)
-
-    bookings.append(req)
-    res = make_response(jsonify({"message":"booking added"}),200)
-    return res
+            date_found = False
+            for bookingDate in booking['dates']:
+                if bookingDate['date'] == date:
+                    date_found = True
+                    if movieid not in bookingDate['movies']:
+                        bookingDate['movies'].append(movieid)
+                        with open('{}/databases/bookings.json'.format("."), "w") as jsf:
+                            json.dump({"bookings": bookings}, jsf, indent=2)
+                        return make_response(jsonify({"message": "booking added"}), 200)
+                    else:
+                        return make_response(jsonify({"error": "booking already exists"}), 409)
+            if not date_found:
+                booking['dates'].append({"date": date, "movies": [movieid]})
+                with open('{}/databases/bookings.json'.format("."), "w") as jsf:
+                    json.dump({"bookings": bookings}, jsf, indent=2)
+                return make_response(jsonify({"message": "booking added"}), 200)
+        else:
+            bookings.append({"userid": userid, "dates": [{"date": date, "movies": [movieid]}]})
+            with open('{}/databases/bookings.json'.format("."), "w") as jsf:
+                json.dump({"bookings": bookings}, jsf, indent=2)
+            return make_response(jsonify({"message": "booking added"}), 200)
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))

@@ -28,11 +28,11 @@ paths:
             application/json:
               example: [{"id": 1, "title": "Movie 1", "rating": 4.5, "director": "Director 1"}, {"id": 2, "title": "Movie 2", "rating": 3.8, "director": "Director 2"}]
 
-  /movies/{movieid}:
+  /movies/{movie_id}:
     get:
       summary: "Get movie by ID"
       parameters:
-        - name: movieid
+        - name: movie_id
           in: path
           required: true
           schema:
@@ -133,11 +133,11 @@ paths:
             application/json:
               example: {"error": "Movie ID not found"}
 
-  /movies/{movieid}:
+  /movies/{movie}:
     delete:
       summary: "Delete movie by ID"
       parameters:
-        - name: movieid
+        - name: movie
           in: path
           required: true
           schema:
