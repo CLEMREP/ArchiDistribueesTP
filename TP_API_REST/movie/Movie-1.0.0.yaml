@@ -1,0 +1,155 @@
+openapi: "3.0.0"
+info:
+  title: "Movie Service API"
+  version: "1.0.0"
+  description: "API for managing movies and their information"
+
+servers:
+  - url: "http://localhost:3200"
+
+paths:
+  /:
+    get:
+      summary: "Get a welcome message"
+      responses:
+        200:
+          description: "Successful response"
+          content:
+            text/html:
+              example: "<h1 style='color:blue'>Welcome to the Movie service!</h1>"
+
+  /json:
+    get:
+      summary: "Get all movies in JSON format"
+      responses:
+        200:
+          description: "Successful response"
+          content:
+            application/json:
+              example: [{"id": 1, "title": "Movie 1", "rating": 4.5, "director": "Director 1"}, {"id": 2, "title": "Movie 2", "rating": 3.8, "director": "Director 2"}]
+
+  /movies/{movieid}:
+    get:
+      summary: "Get movie by ID"
+      parameters:
+        - name: movieid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Successful response"
+          content:
+            application/json:
+              example: {"id": 1, "title": "Movie 1", "rating": 4.5, "director": "Director 1"}
+        400:
+          description: "Movie ID not found"
+          content:
+            application/json:
+              example: {"error": "Movie ID not found"}
+
+  /moviesbytitle:
+    get:
+      summary: "Get movie by title"
+      parameters:
+        - name: title
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Successful response"
+          content:
+            application/json:
+              example: {"id": 1, "title": "Movie 1", "rating": 4.5, "director": "Director 1"}
+        400:
+          description: "Movie title not found"
+          content:
+            application/json:
+              example: {"error": "Movie title not found"}
+
+  /movies/{movieid}:
+    post:
+      summary: "Create a new movie"
+      parameters:
+        - name: movieid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                rating:
+                  type: number
+                director:
+                  type: string
+              required:
+                - title
+                - rating
+                - director
+      responses:
+        200:
+          description: "Movie added successfully"
+          content:
+            application/json:
+              example: {"message": "Movie added"}
+        409:
+          description: "Movie ID already exists"
+          content:
+            application/json:
+              example: {"error": "Movie ID already exists"}
+
+  /movies/{movieid}/{rate}:
+    put:
+      summary: "Update movie rating by ID"
+      parameters:
+        - name: movieid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: rate
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: "Successful response"
+          content:
+            application/json:
+              example: {"id": 1, "title": "Movie 1", "rating": 4.7, "director": "Director 1"}
+        201:
+          description: "Movie ID not found"
+          content:
+            application/json:
+              example: {"error": "Movie ID not found"}
+
+  /movies/{movieid}:
+    delete:
+      summary: "Delete movie by ID"
+      parameters:
+        - name: movieid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Movie deleted successfully"
+          content:
+            application/json:
+              example: {"id": 1, "title": "Movie 1", "rating": 4.5, "director": "Director 1"}
+        400:
+          description: "Movie ID not found"
+          content:
+            application/json:
+              example: {"error": "Movie ID not found"}
