@@ -21,6 +21,14 @@ class ShowtimeServicer(showtime_pb2_grpc.ShowtimeServicer):
             if schedule['date'] == request.date:
                 return showtime_pb2.Schedule(date=schedule['date'], movies=schedule['movies'])
 
+    def FindShowtimeByDateAndMovieId(self, request, context):
+        for schedule in self.db:
+            if schedule['date'] == request.date:
+                for movie in schedule['movies']:
+                    if movie == request.movieId:
+                        return showtime_pb2.ShowtimeFound(found=True)
+        return showtime_pb2.ShowtimeFound(found=False)
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     showtime_pb2_grpc.add_ShowtimeServicer_to_server(ShowtimeServicer(), server)

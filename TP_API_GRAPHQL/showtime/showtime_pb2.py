@@ -14,13 +14,15 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0eshowtime.proto\"\x1c\n\x0cShowtimeDate\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"(\n\x08Schedule\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0e\n\x06movies\x18\x02 \x03(\t\"+\n\x0b\x41llSchedule\x12\x1c\n\tschedules\x18\x01 \x03(\x0b\x32\t.Schedule\"\x0f\n\rShowtimeEmpty2q\n\x08Showtime\x12\x31\n\x13GetShowMoviesByDate\x12\r.ShowtimeDate\x1a\t.Schedule\"\x00\x12\x32\n\x10GetListShowtimes\x12\x0e.ShowtimeEmpty\x1a\x0c.AllSchedule\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0eshowtime.proto\"\x1c\n\x0cShowtimeDate\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"(\n\x08Schedule\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0e\n\x06movies\x18\x02 \x03(\t\"+\n\x0b\x41llSchedule\x12\x1c\n\tschedules\x18\x01 \x03(\x0b\x32\t.Schedule\"-\n\x0c\x46indShowtime\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0f\n\x07movieId\x18\x02 \x01(\t\"\x1e\n\rShowtimeFound\x12\r\n\x05\x66ound\x18\x01 \x01(\x08\"\x0f\n\rShowtimeEmpty2\xb2\x01\n\x08Showtime\x12\x31\n\x13GetShowMoviesByDate\x12\r.ShowtimeDate\x1a\t.Schedule\"\x00\x12\x32\n\x10GetListShowtimes\x12\x0e.ShowtimeEmpty\x1a\x0c.AllSchedule\"\x00\x12?\n\x1c\x46indShowtimeByDateAndMovieId\x12\r.FindShowtime\x1a\x0e.ShowtimeFound\"\x00\x62\x06proto3')
 
 
 
 _SHOWTIMEDATE = DESCRIPTOR.message_types_by_name['ShowtimeDate']
 _SCHEDULE = DESCRIPTOR.message_types_by_name['Schedule']
 _ALLSCHEDULE = DESCRIPTOR.message_types_by_name['AllSchedule']
+_FINDSHOWTIME = DESCRIPTOR.message_types_by_name['FindShowtime']
+_SHOWTIMEFOUND = DESCRIPTOR.message_types_by_name['ShowtimeFound']
 _SHOWTIMEEMPTY = DESCRIPTOR.message_types_by_name['ShowtimeEmpty']
 ShowtimeDate = _reflection.GeneratedProtocolMessageType('ShowtimeDate', (_message.Message,), {
   'DESCRIPTOR' : _SHOWTIMEDATE,
@@ -43,6 +45,20 @@ AllSchedule = _reflection.GeneratedProtocolMessageType('AllSchedule', (_message.
   })
 _sym_db.RegisterMessage(AllSchedule)
 
+FindShowtime = _reflection.GeneratedProtocolMessageType('FindShowtime', (_message.Message,), {
+  'DESCRIPTOR' : _FINDSHOWTIME,
+  '__module__' : 'showtime_pb2'
+  # @@protoc_insertion_point(class_scope:FindShowtime)
+  })
+_sym_db.RegisterMessage(FindShowtime)
+
+ShowtimeFound = _reflection.GeneratedProtocolMessageType('ShowtimeFound', (_message.Message,), {
+  'DESCRIPTOR' : _SHOWTIMEFOUND,
+  '__module__' : 'showtime_pb2'
+  # @@protoc_insertion_point(class_scope:ShowtimeFound)
+  })
+_sym_db.RegisterMessage(ShowtimeFound)
+
 ShowtimeEmpty = _reflection.GeneratedProtocolMessageType('ShowtimeEmpty', (_message.Message,), {
   'DESCRIPTOR' : _SHOWTIMEEMPTY,
   '__module__' : 'showtime_pb2'
@@ -60,8 +76,12 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _SCHEDULE._serialized_end=88
   _ALLSCHEDULE._serialized_start=90
   _ALLSCHEDULE._serialized_end=133
-  _SHOWTIMEEMPTY._serialized_start=135
-  _SHOWTIMEEMPTY._serialized_end=150
-  _SHOWTIME._serialized_start=152
-  _SHOWTIME._serialized_end=265
+  _FINDSHOWTIME._serialized_start=135
+  _FINDSHOWTIME._serialized_end=180
+  _SHOWTIMEFOUND._serialized_start=182
+  _SHOWTIMEFOUND._serialized_end=212
+  _SHOWTIMEEMPTY._serialized_start=214
+  _SHOWTIMEEMPTY._serialized_end=229
+  _SHOWTIME._serialized_start=232
+  _SHOWTIME._serialized_end=410
 # @@protoc_insertion_point(module_scope)

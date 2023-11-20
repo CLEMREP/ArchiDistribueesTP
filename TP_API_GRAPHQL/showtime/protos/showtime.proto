@@ -3,6 +3,7 @@ syntax = "proto3";
 service Showtime {
     rpc GetShowMoviesByDate(ShowtimeDate) returns (Schedule) {}
     rpc GetListShowtimes(ShowtimeEmpty) returns (AllSchedule) {}
+    rpc FindShowtimeByDateAndMovieId(FindShowtime) returns (ShowtimeFound) {}
 }
 
 message ShowtimeDate {
@@ -16,6 +17,15 @@ message Schedule {
 
 message AllSchedule {
     repeated Schedule schedules = 1;
+}
+
+message FindShowtime {
+    string date = 1;
+    string movieId = 2;
+}
+
+message ShowtimeFound {
+    bool found = 1;
 }
 
 message ShowtimeEmpty {

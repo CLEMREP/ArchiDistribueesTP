@@ -24,6 +24,11 @@ class ShowtimeStub(object):
                 request_serializer=showtime__pb2.ShowtimeEmpty.SerializeToString,
                 response_deserializer=showtime__pb2.AllSchedule.FromString,
                 )
+        self.FindShowtimeByDateAndMovieId = channel.unary_unary(
+                '/Showtime/FindShowtimeByDateAndMovieId',
+                request_serializer=showtime__pb2.FindShowtime.SerializeToString,
+                response_deserializer=showtime__pb2.ShowtimeFound.FromString,
+                )
 
 
 class ShowtimeServicer(object):
@@ -41,6 +46,12 @@ class ShowtimeServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def FindShowtimeByDateAndMovieId(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ShowtimeServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -53,6 +64,11 @@ def add_ShowtimeServicer_to_server(servicer, server):
                     servicer.GetListShowtimes,
                     request_deserializer=showtime__pb2.ShowtimeEmpty.FromString,
                     response_serializer=showtime__pb2.AllSchedule.SerializeToString,
+            ),
+            'FindShowtimeByDateAndMovieId': grpc.unary_unary_rpc_method_handler(
+                    servicer.FindShowtimeByDateAndMovieId,
+                    request_deserializer=showtime__pb2.FindShowtime.FromString,
+                    response_serializer=showtime__pb2.ShowtimeFound.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -95,5 +111,22 @@ class Showtime(object):
         return grpc.experimental.unary_unary(request, target, '/Showtime/GetListShowtimes',
             showtime__pb2.ShowtimeEmpty.SerializeToString,
             showtime__pb2.AllSchedule.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FindShowtimeByDateAndMovieId(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Showtime/FindShowtimeByDateAndMovieId',
+            showtime__pb2.FindShowtime.SerializeToString,
+            showtime__pb2.ShowtimeFound.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

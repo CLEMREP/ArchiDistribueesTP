@@ -14,14 +14,16 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rbooking.proto\"\x18\n\x06UserId\x12\x0e\n\x06userid\x18\x01 \x01(\t\"$\n\x04\x44\x61te\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0e\n\x06movies\x18\x02 \x03(\t\"0\n\x08\x42ookingE\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12\x14\n\x05\x64\x61tes\x18\x02 \x03(\x0b\x32\x05.Date\"*\n\x0b\x41llBookings\x12\x1b\n\x08\x62ookings\x18\x01 \x03(\x0b\x32\t.BookingE\"\x07\n\x05\x45mpty2c\n\x07\x42ooking\x12-\n\x12GetBookingByUserId\x12\x07.UserId\x1a\x0c.AllBookings\"\x00\x12)\n\x0fGetListBookings\x12\x06.Empty\x1a\x0c.AllBookings\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rbooking.proto\"\x18\n\x06UserId\x12\x0e\n\x06userid\x18\x01 \x01(\t\"$\n\x04\x44\x61te\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x0e\n\x06movies\x18\x02 \x03(\t\"0\n\x08\x42ookingE\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12\x14\n\x05\x64\x61tes\x18\x02 \x03(\x0b\x32\x05.Date\">\n\rBookingCreate\x12\x0e\n\x06userid\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x0f\n\x07movieid\x18\x03 \x01(\t\"*\n\x0b\x41llBookings\x12\x1b\n\x08\x62ookings\x18\x01 \x03(\x0b\x32\t.BookingE\" \n\rErrorResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2\x94\x01\n\x07\x42ooking\x12-\n\x12GetBookingByUserId\x12\x07.UserId\x1a\x0c.AllBookings\"\x00\x12)\n\x0fGetListBookings\x12\x06.Empty\x1a\x0c.AllBookings\"\x00\x12/\n\rCreateBooking\x12\x0e.BookingCreate\x1a\x0c.AllBookings\"\x00\x62\x06proto3')
 
 
 
 _USERID = DESCRIPTOR.message_types_by_name['UserId']
 _DATE = DESCRIPTOR.message_types_by_name['Date']
 _BOOKINGE = DESCRIPTOR.message_types_by_name['BookingE']
+_BOOKINGCREATE = DESCRIPTOR.message_types_by_name['BookingCreate']
 _ALLBOOKINGS = DESCRIPTOR.message_types_by_name['AllBookings']
+_ERRORRESPONSE = DESCRIPTOR.message_types_by_name['ErrorResponse']
 _EMPTY = DESCRIPTOR.message_types_by_name['Empty']
 UserId = _reflection.GeneratedProtocolMessageType('UserId', (_message.Message,), {
   'DESCRIPTOR' : _USERID,
@@ -44,12 +46,26 @@ BookingE = _reflection.GeneratedProtocolMessageType('BookingE', (_message.Messag
   })
 _sym_db.RegisterMessage(BookingE)
 
+BookingCreate = _reflection.GeneratedProtocolMessageType('BookingCreate', (_message.Message,), {
+  'DESCRIPTOR' : _BOOKINGCREATE,
+  '__module__' : 'booking_pb2'
+  # @@protoc_insertion_point(class_scope:BookingCreate)
+  })
+_sym_db.RegisterMessage(BookingCreate)
+
 AllBookings = _reflection.GeneratedProtocolMessageType('AllBookings', (_message.Message,), {
   'DESCRIPTOR' : _ALLBOOKINGS,
   '__module__' : 'booking_pb2'
   # @@protoc_insertion_point(class_scope:AllBookings)
   })
 _sym_db.RegisterMessage(AllBookings)
+
+ErrorResponse = _reflection.GeneratedProtocolMessageType('ErrorResponse', (_message.Message,), {
+  'DESCRIPTOR' : _ERRORRESPONSE,
+  '__module__' : 'booking_pb2'
+  # @@protoc_insertion_point(class_scope:ErrorResponse)
+  })
+_sym_db.RegisterMessage(ErrorResponse)
 
 Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
   'DESCRIPTOR' : _EMPTY,
@@ -68,10 +84,14 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _DATE._serialized_end=79
   _BOOKINGE._serialized_start=81
   _BOOKINGE._serialized_end=129
-  _ALLBOOKINGS._serialized_start=131
-  _ALLBOOKINGS._serialized_end=173
-  _EMPTY._serialized_start=175
-  _EMPTY._serialized_end=182
-  _BOOKING._serialized_start=184
-  _BOOKING._serialized_end=283
+  _BOOKINGCREATE._serialized_start=131
+  _BOOKINGCREATE._serialized_end=193
+  _ALLBOOKINGS._serialized_start=195
+  _ALLBOOKINGS._serialized_end=237
+  _ERRORRESPONSE._serialized_start=239
+  _ERRORRESPONSE._serialized_end=271
+  _EMPTY._serialized_start=273
+  _EMPTY._serialized_end=280
+  _BOOKING._serialized_start=283
+  _BOOKING._serialized_end=431
 # @@protoc_insertion_point(module_scope)

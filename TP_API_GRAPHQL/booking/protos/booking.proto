@@ -3,6 +3,7 @@ syntax = "proto3";
 service Booking {
     rpc GetBookingByUserId(UserId) returns (AllBookings) {}
     rpc GetListBookings(Empty) returns (AllBookings) {}
+    rpc CreateBooking(BookingCreate) returns (AllBookings) {}
 }
 
 message UserId {
@@ -19,8 +20,18 @@ message BookingE {
     repeated Date dates = 2;
 }
 
+message BookingCreate {
+    string userid = 1;
+    string date = 2;
+    string movieid = 3;
+}
+
 message AllBookings {
     repeated BookingE bookings = 1;
+}
+
+message ErrorResponse {
+    string message = 1;
 }
 
 message Empty {
