@@ -1,0 +1,90 @@
+openapi: "3.0.0"
+info:
+  title: "Booking Service API"
+  version: "1.0.0"
+  description: "API for managing bookings and related information"
+
+servers:
+  - url: "http://localhost:3201"
+
+paths:
+  /:
+    get:
+      summary: "Get a welcome message"
+      responses:
+        200:
+          description: "Successful response"
+          content:
+            text/html:
+              example: "<h1 style='color:blue'>Welcome to the Booking service!</h1>"
+
+  /bookings:
+    get:
+      summary: "Get all bookings"
+      responses:
+        200:
+          description: "Successful response"
+          content:
+            application/json:
+              example: [{"userid": "chris_rivers", "dates": [{"date": "2023-01-01", "movies": [1, 2, 3]}]}]
+
+  /bookings/{userid}:
+    get:
+      summary: "Get booking by UserID"
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Successful response"
+          content:
+            application/json:
+              example: {"userid": "chris_rivers", "dates": [{"date": "2023-01-01", "movies": [1, 2, 3]}]}
+        400:
+          description: "Booking with this UserID not found"
+          content:
+            application/json:
+              example: {"error": "Booking with this UserID not found"}
+
+  /bookings/{userid}:
+    post:
+      summary: "Create a new booking"
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dates:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                      movies:
+                        type: array
+                        items:
+                          type: integer
+              required:
+                - dates
+      responses:
+        200:
+          description: "Booking added successfully"
+          content:
+            application/json:
+              example: {"message": "Booking added"}
+        409:
+          description: "Booking ID already exists"
+          content:
+            application/json:
+              example: {"error": "Booking ID already exists"}
