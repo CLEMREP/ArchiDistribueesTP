@@ -15,6 +15,8 @@ def get_list_showtimes(stub):
 channel = grpc.insecure_channel('localhost:3003')
 stub = showtime_pb2_grpc.ShowtimeStub(channel)
 
+# get_list_showtimes(stub)
+
 class BookingServicer(booking_pb2_grpc.BookingServicer):
     def __init__(self):
         with open('{}/data/bookings.json'.format("."), "r") as jsf:
