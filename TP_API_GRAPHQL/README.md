@@ -1,7 +1,9 @@
 # TP MIXTE
 
 ## Installation 
-vous devez lancer les services dans l'ordre suivant :
+- récupérer le projet sur le repo github
+
+Une fois le projet installé vous devez lancer les services dans l'ordre suivant :
 - showtime
 - booking
 - movie 
