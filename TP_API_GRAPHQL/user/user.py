@@ -134,8 +134,6 @@ def update_user(userid):
         return make_response(jsonify({"error": "Utilisateur non trouvé"}), 400)
 
 
-# creer à partir d'un User un Booking en allant vérifier qu'il existe une seance (showtime) pour ce film à une date donnée
-# User -> Booking -> Showtime
 @app.route("/users/<userid>/bookings/add", methods=['POST'])
 def create_user_booking(userid):
     req = request.get_json()
