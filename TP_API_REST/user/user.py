@@ -33,11 +33,12 @@ def get_user_movies(userid):
     res = requests.get("http://localhost:3201/bookings/{}".format(userid)).json()
     movies = []
     rvalue = []
-    for movie in res['dates'][0]['movies']:
-        movies.append(requests.get("http://localhost:3200/movies/{}".format(movie)).json())
+    for i in range(len(res['dates'])):
+        for movie in res['dates'][i]['movies']:
+            movies.append(requests.get("http://localhost:3200/movies/{}".format(movie)).json())
 
-    for movie in movies:
-        rvalue.append(requests.get("http://localhost:3200/movies/{}".format(movie['id'])).json())
+        for movie in movies:
+            rvalue.append(requests.get("http://localhost:3200/movies/{}".format(movie['id'])).json())
 
     return make_response(jsonify(rvalue),200)
 

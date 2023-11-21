@@ -11,18 +11,20 @@ PORT = 3004
 HOST = '0.0.0.0'
 
 
+# Définition de la fonction pour récupérer les bookings d'un utilisateur qui appelle le service gRPC
 def get_bookings_by_userid(stub, userid):
     bookings = stub.GetBookingByUserId(booking_pb2.UserId(userid=userid))
     return bookings
 
-
+# Définition de la fonction pour récupérer tous les bookings qui appelle le service gRPC
 def get_list_bookings(stub):
     allBookings = stub.GetListBookings(booking_pb2.Empty())
     for booking in allBookings.bookings:
         print(booking)
 
-# create_booking
+# Définition de la fonction pour créer un booking qui appelle le service gRPC
 def create_booking(stub, userid, date, movieid):
+    # Appel du service gRPC
     bookings = stub.CreateBooking(booking_pb2.BookingCreate(userid=userid, date=date, movieid=movieid))
     return bookings.bookings
 
@@ -55,15 +57,19 @@ def get_user_byid(userid):
 @app.route("/users/bookings/<userid>", methods=['GET'])
 def get_user_bookings(userid):
     res = get_bookings_by_userid(stub, userid)
+    # Si aucun booking n'est trouvé, on renvoie une erreur
     if len(res.bookings) == 0:
         return make_response(jsonify({"error": "Bookings not found for this User ID"}))
     response = []
+
+    # Sinon on renvoie les bookings
     for booking in res.bookings:
         response.append(booking.userid)
         for date in booking.dates:
             response.append(date.date)
             movies = []
             for movie in date.movies:
+                # J'appele le service movie pour récupérer les infos du film
                 query = """
                 query {
                     movie_with_id(_id: """ + '''"''' + str(movie) + '''"''' + """) {id title rating director}
@@ -79,9 +85,11 @@ def get_user_bookings(userid):
 def create_user():
     userid = request.form.get("userid")
     for user in users:
+        # Regarder si l'utilisateur existe déjà
         if str(user["id"]) == str(userid):
             return make_response(jsonify({"error": "User ID already exists"}), 400)
 
+    # Si tous les paramètres sont présents, on crée l'utilisateur
     if 'name' in request.form and 'last_active' in request.form:
         new_user = {
             "id": userid,
@@ -136,8 +144,10 @@ def update_user(userid):
 
 @app.route("/users/<userid>/bookings/add", methods=['POST'])
 def create_user_booking(userid):
+    # récupération des données de la requête
     req = request.get_json()
 
+    # Vérification de la présence des données nécessaires sinon erreur
     if 'date' not in req or 'movieid' not in req:
         return make_response(jsonify({"error": "missing arguments (date, movieid)"}), 400)
 
@@ -150,6 +160,7 @@ def create_user_booking(userid):
 
     movie_found = False
 
+    # Voir si le film existe
     for movie in movies:
         if str(movie["id"]) == str(req['movieid']):
             movie_found = True
@@ -161,11 +172,14 @@ def create_user_booking(userid):
     date = req['date']
     movieid = req['movieid']
 
+    # Création du booking dans le service gRPC
     res = create_booking(stub, userid, date, movieid)
 
+    # Si je n'ai rien c'est que j'ai une erreur (booking déjà existant, mauvaise date, ...)
     if len(res) == 0:
         return make_response(jsonify({"error": "We have an error. (Peux-être mauvaise date, booking déjà existant ...)"}), 409)
     response = []
+
     for booking in res:
         if str(booking.userid) == str(userid):
             response.append(booking.userid)
@@ -173,6 +187,7 @@ def create_user_booking(userid):
                 response.append(date.date)
                 movies = []
                 for movie in date.movies:
+                    # J'appele le service movie pour récupérer les infos du film
                     query = """
                     query {
                         movie_with_id(_id: """ + '''"''' + str(movie) + '''"''' + """) {id title rating director}
