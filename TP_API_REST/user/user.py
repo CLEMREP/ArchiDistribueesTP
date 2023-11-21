@@ -23,22 +23,31 @@ def get_user_byid(userid):
             return res
     return make_response(jsonify({"error":"User ID not found"}),400)
 
+# Récupération des bookings d'un utilisateur
 @app.route("/users/bookings/<userid>", methods=['GET'])
 def get_user_bookings(userid):
+    # Appel du service booking REST
     res = requests.get("http://localhost:3201/bookings/{}".format(userid)).json()
     return make_response(res)
 
 @app.route("/users/infomovies/<userid>", methods=['GET'])
 def get_user_movies(userid):
+    # Appel du service booking REST
     res = requests.get("http://localhost:3201/bookings/{}".format(userid)).json()
     movies = []
     rvalue = []
+
+    # On boucle sur les dates
     for i in range(len(res['dates'])):
+        # On boucle sur les movies
         for movie in res['dates'][i]['movies']:
+            # On récupère les movies dans un tableau en appelant le service movie REST
             movies.append(requests.get("http://localhost:3200/movies/{}".format(movie)).json())
 
-        for movie in movies:
-            rvalue.append(requests.get("http://localhost:3200/movies/{}".format(movie['id'])).json())
+    # On boucle sur les movies pour récupérer les infos
+    for movie in movies:
+        # On récupère les infos du movie dans un tableau en appelant le service movie REST
+        rvalue.append(requests.get("http://localhost:3200/movies/{}".format(movie['id'])).json())
 
     return make_response(jsonify(rvalue),200)
 
