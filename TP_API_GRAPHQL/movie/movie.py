@@ -8,6 +8,11 @@ PORT = 3001
 HOST = '0.0.0.0'
 app = Flask(__name__)
 
+
+# ajout des méthodes du resolver, query.[...] correspond aux selections,
+# mutation.[...] correspond aux modifications ( delete, update, add )
+# ajout des schémas movie et actor
+
 type_defs = load_schema_from_path('movie.graphql')
 query = QueryType()
 movie = ObjectType('Movie')
