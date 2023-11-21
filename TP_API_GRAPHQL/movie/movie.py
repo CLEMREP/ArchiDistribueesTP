@@ -31,10 +31,12 @@ schema = make_executable_schema(type_defs, movie, query, mutation, actor)
 def home():
     return make_response("<h1 style='color:blue'>Welcome to the Movie service!</h1>",200)
 
+#Playground permettant de faire des requêtes dans le navigateur
 @app.route('/graphql', methods=['GET'])
 def playground():
     return PLAYGROUND_HTML, 200
 
+# route, api posyt qui permet de requêter la base en prenant en paramètre un query
 @app.route('/graphql', methods=['POST'])
 def graphql_server():
     data = request.get_json()
